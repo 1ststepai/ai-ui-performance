@@ -1,5 +1,10 @@
 Set-StrictMode -Version Latest
 
+function Get-UIProcessRole($Process) {
+    if ($Process.MainWindowHandle -ne [IntPtr]::Zero) { return 'main' }
+    return 'unknown'
+}
+
 function Read-PerformanceState($File) {
     if (!(Test-Path -LiteralPath $File)) { return @() }
     $state = Get-Content -LiteralPath $File -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
@@ -43,7 +48,7 @@ function Set-VerifiedPriority($Process, $Priority, $ExpectedPriority) {
 function Invoke-PerformanceProfile($Mode, $Inventory, $AllowedPaths, $StateFile, $Preview) {
     $records = @(Read-PerformanceState $StateFile)
     $results = [Collections.Generic.List[object]]::new()
-    $targets = if ($Mode -eq 'Speed') { @($Inventory | Where-Object { $_.Role -in 'main','renderer' -and $_.Priority -eq 'Normal' -and $_.Path -in $AllowedPaths }) } else { @($records | Where-Object { $_.Path -in $AllowedPaths }) }
+    $targets = if ($Mode -eq 'Speed') { @($Inventory | Where-Object { $_.Role -eq 'main' -and $_.Priority -eq 'Normal' -and $_.Path -in $AllowedPaths }) } else { @($records | Where-Object { $_.Path -in $AllowedPaths }) }
     foreach ($target in $targets) {
         $record = if ($Mode -eq 'Speed') {
             [pscustomobject]@{ ProcessId = $target.ProcessId; Path = $target.Path; StartTimeTicks = $target.StartTimeTicks; OriginalPriority = 'Normal'; AppliedPriority = 'AboveNormal' }

@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ai-ui-performance",
-  "version": "0.2.0",
-  "description": "Reversible Windows CPU priority profiles and resource checks for AI desktop and shared browser UIs.",
+  "version": "0.2.2",
+  "description": "Experimental Windows resource diagnostics and reversible CPU scheduling profiles.",
   "author": {
     "name": "1ststep.ai",
     "url": "https://github.com/1ststepai"
@@ -12,32 +12,29 @@
   "license": "MIT",
   "keywords": [
     "windows",
-    "performance",
-    "codex",
-    "claude",
-    "cursor",
-    "gemini",
-    "grok"
+    "desktop",
+    "scheduling",
+    "diagnostics"
   ],
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "AI UI Performance",
-        "shortDescription": "Reversible AI UI profiles",
-        "longDescription": "Check resource pressure and apply or restore CPU scheduling profiles for verified Windows Codex, Claude Desktop and Cursor installations. Gemini, Grok and browser AI UIs use an explicit shared Chrome/Edge/Brave profile that also affects unrelated tabs. Runs on demand with no background service or telemetry. Does not reduce RAM, change app UI code, or speed cloud inference. Windows only; no measured latency improvement is claimed.",
+        "displayName": "1ststep Desktop Profiles",
+        "shortDescription": "Inspect Windows resource use",
+        "longDescription": "Inspect Windows resource usage and optionally apply or restore narrowly scoped CPU scheduling profiles for verified desktop executables. Shared-browser profiles require explicit opt-in because unrelated tabs may be affected. Experimental: controlled testing has not established a UI speed benefit. Runs on demand with no telemetry or background service. Does not lower RAM use or accelerate remote responses.",
         "developerName": "1ststep.ai",
         "category": "Productivity",
         "capabilities": [],
         "websiteURL": "https://github.com/1ststepai/ai-ui-performance",
         "supportURL": "https://github.com/1ststepai/ai-ui-performance/issues",
-        "privacyPolicyURL": "https://github.com/1ststepai/ai-ui-performance/blob/main/PRIVACY.md",
-        "defaultPrompt": "Use $ai-ui-performance to check my AI app UIs and optimize desktop responsiveness.",
+        "privacyPolicyURL": "https://raw.githubusercontent.com/1ststepai/ai-ui-performance/main/PRIVACY.md",
+        "defaultPrompt": "Use $ai-ui-performance to inspect desktop resource pressure. Explain experimental limits; do not apply a profile.",
         "logo": "./assets/icon.svg",
         "composerIcon": "./assets/icon.svg",
         "brandColor": "#17334A"
       },
       "publication": {
-        "release_notes": "0.2.0 adds verified desktop AI UI support and explicit shared browser profiles with scoped restore and legacy Codex compatibility."
+        "release_notes": "Privacy correction: explicit data use, recipients, retention and controls. Process arguments are no longer inspected; scheduling is limited to verified window-owning processes. Existing undo records remain restorable. No UI speed benefit is established."
       }
     }
   }

@@ -10,6 +10,10 @@ $temporaryRoot = Join-Path ([IO.Path]::GetTempPath()) ('codex-performance-test-'
 [IO.Directory]::CreateDirectory($temporaryRoot) | Out-Null
 $child = $null
 try {
+    Assert ((Get-UIProcessRole ([pscustomobject]@{MainWindowHandle=[IntPtr]1})) -eq 'main') 'Window-owning process was skipped'
+    Assert ((Get-UIProcessRole ([pscustomobject]@{MainWindowHandle=[IntPtr]::Zero})) -eq 'unknown') 'Background process was classified as a UI'
+    $entrySource = Get-Content (Join-Path $PSScriptRoot '..\skills\ai-ui-performance\scripts\AI-UI-Performance.ps1') -Raw
+    Assert ($entrySource -notmatch 'CommandLine' -and $entrySource -match '-Property ProcessId,ExecutablePath') 'Discovery requests process arguments'
     $signature = [pscustomobject]@{Status='Valid';SignerCertificate=[pscustomobject]@{Subject='CN=Google LLC, O=Google LLC, C=US'}}
     Assert (Test-UIAppSignature $signature 'Google LLC') 'Valid publisher rejected'
     $signature.SignerCertificate.Subject = 'CN=Google LLC, O=Fake Google LLC, C=US'
@@ -59,13 +63,13 @@ try {
         $script:handles[$Number] = [pscustomobject]@{ PriorityClass = $Priority; StartTimeTicks = [string]$Number }
         [pscustomobject]@{ ProcessId = $Number; Path = $Path; StartTimeTicks = [string]$Number; Role = $Role; Priority = $Priority }
     }
-    $inventory = @((New-Fixture 1 'main' 'Normal'), (New-Fixture 2 'renderer' 'Idle'), (New-Fixture 3 'gpu-process' 'Normal'), (New-Fixture 4 'renderer' 'Normal' 'C:\other\ChatGPT.exe'))
+    $inventory = @((New-Fixture 1 'main' 'Normal'), (New-Fixture 2 'renderer' 'Normal'), (New-Fixture 3 'gpu-process' 'Normal'), (New-Fixture 4 'main' 'Normal' 'C:\other\ChatGPT.exe'), (New-Fixture 8 'unknown' 'Normal'), (New-Fixture 9 'main' 'Idle'))
     $preview = Invoke-PerformanceProfile 'Speed' $inventory @($app) $file $true
     Assert ($preview.Results.Count -eq 1 -and $preview.Results[0].Status -eq 'WouldSpeed') 'Preview selection failed'
     Assert (!(Test-Path -LiteralPath $file) -and $handles[1].PriorityClass -eq 'Normal') 'Preview changed state'
     $applied = Invoke-PerformanceProfile 'Speed' $inventory @($app) $file $false
     Assert ($applied.Results.Count -eq 1 -and $applied.Results[0].Status -eq 'Applied') 'Active UI selection failed'
-    Assert ($handles[2].PriorityClass -eq 'Idle' -and $handles[3].PriorityClass -eq 'Normal' -and $handles[4].PriorityClass -eq 'Normal') 'Unrelated or idle process changed'
+    Assert ($handles[2].PriorityClass -eq 'Normal' -and $handles[3].PriorityClass -eq 'Normal' -and $handles[4].PriorityClass -eq 'Normal' -and $handles[8].PriorityClass -eq 'Normal' -and $handles[9].PriorityClass -eq 'Idle') 'Renderer, unknown, unrelated or idle process changed'
     $repeat = Invoke-PerformanceProfile 'Speed' $inventory @($app) $file $false
     $journal = @(Read-PerformanceState $file)
     Assert ($journal.Count -eq 1 -and $journal[0].OriginalPriority -eq 'Normal') 'Repeated apply lost original priority'
@@ -103,7 +107,7 @@ try {
     Assert (@(Select-UIApps $catalog 'Gemini')[0].Path -eq $browserPath) 'Gemini browser alias failed'
     Assert (@(Select-UIApps $catalog 'Grok')[0].Path -eq $browserPath) 'Grok browser alias failed'
     Assert (@(Select-UIApps $catalog 'Codex').Count -eq 0) 'Missing app selected another app'
-    $multi = @((New-Fixture 5 'main' 'Normal' $claudePath),(New-Fixture 6 'renderer' 'Normal' $cursorPath),(New-Fixture 7 'renderer' 'Normal' $browserPath))
+    $multi = @((New-Fixture 5 'main' 'Normal' $claudePath),(New-Fixture 6 'main' 'Normal' $cursorPath),(New-Fixture 7 'main' 'Normal' $browserPath))
     $multiFile = Join-Path $temporaryRoot 'multi.json'
     $desktopPaths = @(Select-UIApps $catalog 'Desktop' | ForEach-Object Path)
     $multiApply = Invoke-PerformanceProfile 'Speed' $multi $desktopPaths $multiFile $false
@@ -114,6 +118,10 @@ try {
     Assert ($browserApply.Results.Count -eq 1 -and $handles[7].PriorityClass -eq 'AboveNormal') 'Explicit browser apply failed'
     $allRestore = Invoke-PerformanceProfile 'Restore' @() @($claudePath,$cursorPath,$browserPath) $multiFile $false
     Assert ($allRestore.Results.Count -eq 2 -and @(Read-PerformanceState $multiFile).Count -eq 0) 'Combined restore failed'
+    $handles[2].PriorityClass = 'AboveNormal'
+    Save-PerformanceState $file @([pscustomobject]@{ProcessId=2;Path=$app;StartTimeTicks='2';OriginalPriority='Normal';AppliedPriority='AboveNormal'})
+    $legacyRestore = Invoke-PerformanceProfile 'Restore' @() @($app) $file $false
+    Assert ($legacyRestore.Results[0].Status -eq 'Restored' -and $handles[2].PriorityClass -eq 'Normal') 'Legacy renderer record cannot be restored'
     [IO.File]::WriteAllText($file, '{"Version":1,"Records":[{"OriginalPriority":"High"}]}')
     $caught = $false
     try { Read-PerformanceState $file | Out-Null } catch { $caught = $true }

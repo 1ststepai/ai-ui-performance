@@ -57,7 +57,7 @@ Double-click `AI-UI-Speed.cmd` for a desktop-only apply or `Codex-Speed.cmd` for
 
 ## Safety and limits
 
-Only main and currently Normal renderer processes become AboveNormal. Idle renderers, GPU workers, utilities, CLI agents and other executables are excluded. Installed MSIX publisher identity or known paths with valid Authenticode publisher signatures establish eligibility; a process name alone never authorizes changes.
+Only verified processes with a main desktop window and Normal priority become AboveNormal. Process command lines and arguments are not inspected. Renderers and other processes without a main window are skipped; minimized/tray-only apps may therefore be ineligible. Installed MSIX publisher identity or known paths with valid Authenticode publisher signatures establish eligibility; a process name alone never authorizes changes. Restore still supports records created by earlier renderer profiles.
 
 The private journal remains in `~/.codex/performance` for compatibility with the earlier Codex tool. It records original priority before mutation. Restore checks full path, process ID, UTC start time and expected applied priority; later app/tool changes are skipped. Atomic replacement and an exclusive lock protect the journal. Failed changes retain undo records; corrupt state stops writes. Profiles reset when processes restart, so reapply on demand.
 
