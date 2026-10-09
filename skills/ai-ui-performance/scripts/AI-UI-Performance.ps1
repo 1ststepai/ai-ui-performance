@@ -20,14 +20,13 @@ try {
     if ($Mode -eq 'Speed' -and @($selected | Where-Object Category -eq 'Browser').Count -and !$IncludeBrowsers) { throw 'Browser mode affects shared Chrome, Edge and Brave processes, including unrelated tabs. Use -IncludeBrowsers only when you want this browser-wide profile.' }
     $allowedPaths = @($selected | ForEach-Object Path)
     $inventory = @(
-        foreach ($row in @(Get-CimInstance Win32_Process -Filter "Name='ChatGPT.exe' OR Name='claude.exe' OR Name='Cursor.exe' OR Name='chrome.exe' OR Name='msedge.exe' OR Name='brave.exe'" -ErrorAction Stop)) {
+        foreach ($row in @(Get-CimInstance Win32_Process -Property ProcessId,ExecutablePath -Filter "Name='ChatGPT.exe' OR Name='claude.exe' OR Name='Cursor.exe' OR Name='chrome.exe' OR Name='msedge.exe' OR Name='brave.exe'" -ErrorAction Stop)) {
             $installed = @($catalog | Where-Object Path -eq $row.ExecutablePath)
             if (!$installed.Count) { continue }
             try {
                 $process = Get-Process -Id $row.ProcessId -ErrorAction Stop
                 if ($process.Path -ne $row.ExecutablePath) { continue }
-                $role = if ($row.CommandLine -match '(?:^|\s)--type=([^\s]+)') { $Matches[1] } else { 'main' }
-                if (!$row.CommandLine) { $role = 'unknown' }
+                $role = Get-UIProcessRole $process
                 [pscustomobject]@{ App = $installed[0].App; ProcessId = $row.ProcessId; Path = $process.Path; StartTimeTicks = [string]$process.StartTime.ToUniversalTime().Ticks; Role = $role; Priority = [string]$process.PriorityClass; MemoryMiB = [math]::Round($process.WorkingSet64 / 1MB) }
             } catch { Write-Warning "Could not inspect UI process $($row.ProcessId): $($_.Exception.Message)" }
         }
