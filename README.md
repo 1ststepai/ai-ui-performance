@@ -2,6 +2,8 @@
 
 **Experimental: no real UI performance improvement has been demonstrated.** The safety tests prove identity checks and reversible priority changes, not faster typing, scrolling or navigation. Do not treat this as a validated speed optimizer or promise a guaranteed improvement.
 
+A small comparison on one Windows workstation used 12 alternating blank-page openings through the Codex built-in browser API after a warm-up. Median API-to-accessibility readiness was **441.5 ms with the profile off** and **1,034.5 ms with it on**. Profile-on was faster in only one of three pairs. This test showed **no repeatable benefit**. It includes automation/IPC overhead and changing background load, and does not establish causation, click-to-photon latency, chat creation speed or a universal regression. The profile was restored afterward. Public-directory submission is on hold pending useful real UI performance evidence.
+
 An independent MIT-licensed Windows skill/plugin by 1ststep.ai. Check resource pressure and apply a reversible CPU priority profile for AI interfaces. Not affiliated with OpenAI, Anthropic, Google, xAI, Cursor or browser vendors.
 
 **This changes scheduling preference under CPU contention. It does not reduce RAM, redesign an app, or speed cloud inference. No measured latency improvement is claimed.** Commands run on demand; no daemon, telemetry, scheduled task or model call is installed.

@@ -1,4 +1,6 @@
 interface:
   display_name: "AI UI Performance"
-  short_description: "Check AI app resources and apply reversible speed profiles"
-  default_prompt: "Use $ai-ui-performance to check my AI app UIs and optimize desktop responsiveness."
+  short_description: "Diagnose AI UI pressure; test experimental priority profiles"
+  default_prompt: "Use $ai-ui-performance to diagnose AI app UI resource pressure before considering experimental priority changes."
+policy:
+  allow_implicit_invocation: false

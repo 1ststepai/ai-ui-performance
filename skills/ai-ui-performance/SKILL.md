@@ -1,9 +1,11 @@
 ---
 name: ai-ui-performance
-description: Diagnose and optimize Windows AI app UI responsiveness with reversible CPU priority profiles for Codex, Claude Desktop, Cursor, and shared Chrome/Edge/Brave browser UIs such as Gemini and Grok. This does not speed up model inference or reduce RAM.
+description: Diagnose Windows AI UI resource pressure and explicitly test experimental reversible CPU priority profiles. No repeatable UI benefit is demonstrated. Supports verified desktop apps and opt-in shared browsers; does not accelerate inference or reduce RAM.
 ---
 
 # AI UI Performance
+
+The current profile has not demonstrated a repeatable UI benefit in the built-in browser test. For a general lag complaint, diagnose with Check first. Do not automatically apply Speed as a proven fix. Use Speed only for an explicitly requested experiment or when applicable controlled measurement supports it. A user requirement for proven or guaranteed improvement is not satisfied by priority readback or safety tests. Restore experimental changes when no repeatable benefit is shown.
 
 Run `scripts/AI-UI-Performance.ps1` relative to this skill with Windows PowerShell 5.1. Default `-Mode Check` is read-only: verified apps, process roles/priorities, available RAM, and large competing processes. Normal reports exclude process arguments, chat content, browser URLs, and credentials. Resource pressure suggests a bottleneck, not a proven cause of lag.
 
