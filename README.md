@@ -1,5 +1,7 @@
 # AI UI Performance
 
+**Experimental: no real UI performance improvement has been demonstrated.** The safety tests prove identity checks and reversible priority changes, not faster typing, scrolling or navigation. Do not treat this as a validated speed optimizer or promise a guaranteed improvement.
+
 An independent MIT-licensed Windows skill/plugin by 1ststep.ai. Check resource pressure and apply a reversible CPU priority profile for AI interfaces. Not affiliated with OpenAI, Anthropic, Google, xAI, Cursor or browser vendors.
 
 **This changes scheduling preference under CPU contention. It does not reduce RAM, redesign an app, or speed cloud inference. No measured latency improvement is claimed.** Commands run on demand; no daemon, telemetry, scheduled task or model call is installed.
@@ -60,6 +62,8 @@ The private journal remains in `~/.codex/performance` for compatibility with the
 Working sets may include shared memory; their sum is not unique allocated RAM. Browser mode can include non-AI and remote desktop tabs. No URLs/chats are inspected, no processes are killed, and no services, network, model, billing, security or graphics settings are changed. There is no memory trimming or High/Realtime mode.
 
 ## Validation and contribution
+
+Before recommending this profile or submitting it to the public directory, compare one repeatable UI action with the profile off and on in alternating trials on the same app, device, display and workload. Measure input delay or rendered interaction latency, including slow-tail delays; CPU/RAM snapshots and cloud reply times do not establish UI benefit. Confirm a repeatable improvement beyond measurement noise and check other active apps for regressions. If usable UI latency telemetry or a reproducible task is unavailable, the result is **not established**, not a pass. A result on one device or app is not a guarantee for all devices or apps.
 
 ```powershell
 powershell.exe -NoProfile -File .\tests\Test-Performance.ps1
