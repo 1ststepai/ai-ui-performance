@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Performance"
+  short_description: "Check Codex resources and apply a reversible speed profile"
+  default_prompt: "Use $codex-performance to check Codex resource pressure and apply the reversible speed profile."

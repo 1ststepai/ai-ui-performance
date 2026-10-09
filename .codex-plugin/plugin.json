@@ -1,0 +1,44 @@
+{
+  "name": "ai-ui-performance",
+  "version": "0.2.0",
+  "description": "Reversible Windows CPU priority profiles and resource checks for AI desktop and shared browser UIs.",
+  "author": {
+    "name": "1ststep.ai",
+    "url": "https://github.com/1ststepai"
+  },
+  "homepage": "https://github.com/1ststepai/ai-ui-performance",
+  "repository": "https://github.com/1ststepai/ai-ui-performance",
+  "license": "MIT",
+  "keywords": [
+    "windows",
+    "performance",
+    "codex",
+    "claude",
+    "cursor",
+    "gemini",
+    "grok"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AI UI Performance",
+    "shortDescription": "Reversible AI UI profiles",
+    "longDescription": "Check resource pressure and apply or restore CPU scheduling profiles for verified Windows Codex, Claude Desktop and Cursor installations. Gemini, Grok and browser AI UIs use an explicit shared Chrome/Edge/Brave profile that also affects unrelated tabs. Runs on demand with no background service or telemetry. Does not reduce RAM, change app UI code, or speed cloud inference. Windows only; no measured latency improvement is claimed.",
+    "developerName": "1ststep.ai",
+    "category": "Productivity",
+    "capabilities": [],
+    "websiteURL": "https://github.com/1ststepai/ai-ui-performance",
+    "supportURL": "https://github.com/1ststepai/ai-ui-performance/issues",
+    "privacyPolicyURL": "https://github.com/1ststepai/ai-ui-performance/blob/main/PRIVACY.md",
+    "defaultPrompt": "Use $ai-ui-performance to check my AI app UIs and optimize desktop responsiveness.",
+    "logo": "./assets/icon.svg",
+    "composerIcon": "./assets/icon.svg",
+    "brandColor": "#17334A"
+  },
+  "extensions": {
+    "com.openai": {
+      "publication": {
+        "release_notes": "0.2.0 adds verified desktop AI UI support and explicit shared browser profiles with scoped restore and legacy Codex compatibility."
+      }
+    }
+  }
+}

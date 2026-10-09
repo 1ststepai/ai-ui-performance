@@ -1,0 +1,7 @@
+.project-os/
+receipts/
+dist/
+*.log
+__pycache__/
+profile.json*
+profile.lock

@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI UI Performance"
+  short_description: "Check AI app resources and apply reversible speed profiles"
+  default_prompt: "Use $ai-ui-performance to check my AI app UIs and optimize desktop responsiveness."

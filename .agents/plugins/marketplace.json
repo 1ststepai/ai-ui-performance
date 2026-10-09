@@ -1,0 +1,10 @@
+{
+  "name": "1ststepai-ai-ui-performance",
+  "interface": { "displayName": "1ststep.ai AI UI Performance" },
+  "plugins": [{
+    "name": "ai-ui-performance",
+    "source": { "source": "local", "path": "./" },
+    "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+    "category": "Productivity"
+  }]
+}
